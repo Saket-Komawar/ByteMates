@@ -1,2 +1,2 @@
-# CS-APAC-HACK
+# ByteMates
 Credit Suisse APAC Hackathon 2018
