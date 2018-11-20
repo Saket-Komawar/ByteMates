@@ -3,7 +3,6 @@ package com.bytemates.demo.controller;
 import com.bytemates.demo.model.DocumentType;
 import com.bytemates.demo.model.User;
 import com.bytemates.demo.repository.UserRepository;
-import com.bytemates.demo.service.ToPDFService;
 import com.bytemates.demo.service.UserService;
 import com.itextpdf.text.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
@@ -88,4 +88,10 @@ public class UserController {
         return ResponseEntity.ok().body("document uploaded");
     }
 
+    @PostMapping("sign-document/{id}/{documentType}")
+    public void signDocument(@RequestParam String encodedString) {
+        byte[] decoded = Base64.getDecoder().decode(encodedString.split(",")[1]);
+
+
+    }
 }

@@ -4,6 +4,7 @@ import com.bytemates.demo.model.DocumentType;
 import com.bytemates.demo.model.User;
 import com.bytemates.demo.repository.UserRepository;
 import com.itextpdf.text.DocumentException;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -15,6 +16,7 @@ import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Base64;
 
 @Service
 @Transactional
@@ -97,5 +99,14 @@ public class UserService {
         dummyuser.setIpqExtension("application/pdf");
 
         return dummyuser;
+    }
+
+    public static void main(String args[]) throws Exception {
+        File file = new ClassPathResource("static/abc.txt").getFile();
+        String encoded = FileUtils.readFileToString(file);
+
+        byte[] decoded = Base64.getDecoder().decode(encoded);
+        FileUtils.writeByteArrayToFile(new File("abc.png"), decoded);
+
     }
 }
