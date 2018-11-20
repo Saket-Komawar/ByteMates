@@ -22,6 +22,9 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    ToPDFService toPDFService;
+
     public void saveDummyUser() throws IOException {
         User dummyUser = new User();
         dummyUser.setName("client-1");
@@ -37,7 +40,7 @@ public class UserService {
 
     public void uploadDocument(Long id, MultipartFile file, DocumentType documentType) throws IOException {
         User user = userRepository.findById(id).get();
-        byte[] content = file.getBytes();
+        byte[] content = ToPDFService.getByteArray(file);
         String fileExtension = file.getContentType();
         switch (documentType) {
             case PASSPORT:
