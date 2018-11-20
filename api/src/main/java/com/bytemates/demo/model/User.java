@@ -33,16 +33,18 @@ public class User {
     private String signatureExtension;
 
     @Lob
-    private byte[] passport;
+    private byte[] passportDocument;
     private String passportExtension;
+    private String passportNumber;
 
     @Lob
-    private byte[] ipq;
+    private byte[] ipqDocument;
     private String ipqExtension;
 
     @Lob
-    private byte[] adderss;
+    private byte[] addressDocument;
     private String addressExtension;
+    private String address;
 
 
 }

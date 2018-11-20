@@ -27,9 +27,9 @@ public class UserController {
     private UserRepository userRepository;
 
     @GetMapping("/ping")
-    public void ping() throws IOException {
+    public void ping() {
 
-        userService.saveDummyUser();
+        //userService.saveDummyUser();
         System.out.println("pinged");
     }
 
@@ -47,22 +47,22 @@ public class UserController {
 
     @GetMapping("/stream-document/{id}/{documentType}")
     @ResponseBody
-    public ResponseEntity<Resource> getUserSignature(@PathVariable Long id, @PathVariable DocumentType documentType) {
+    public ResponseEntity<Resource> downloadDocument(@PathVariable Long id, @PathVariable DocumentType documentType) {
         User user = userRepository.findById(id).get();
         byte[] content;
         String documentExtension;
         switch (documentType) {
             case PASSPORT:
-                content = user.getPassport();
+                content = user.getPassportDocument();
                 documentExtension = user.getPassportExtension();
                 break;
             case IPQ:
-                content = user.getIpq();
+                content = user.getIpqDocument();
                 documentExtension = user.getIpqExtension();
                 break;
 
             case ADDRESS:
-                content = user.getAdderss();
+                content = user.getAddressDocument();
                 documentExtension = user.getAddressExtension();
                 break;
             default:
