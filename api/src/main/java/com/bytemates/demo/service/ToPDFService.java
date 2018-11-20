@@ -52,6 +52,4 @@ public class ToPDFService {
         br.close();
     }
 
-    public static void main(String argv[]) throws Exception{
-    }
 }

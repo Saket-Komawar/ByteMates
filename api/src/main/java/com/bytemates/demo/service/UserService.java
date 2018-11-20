@@ -1,17 +1,20 @@
 package com.bytemates.demo.service;
 
+import com.bytemates.demo.model.DocumentType;
 import com.bytemates.demo.model.User;
 import com.bytemates.demo.repository.UserRepository;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
 @Service
+@Transactional
 public class UserService {
 
     @Autowired
@@ -28,5 +31,32 @@ public class UserService {
         dummyUser.setSignatureExtension("image/png");
 
         userRepository.save(dummyUser);
+    }
+
+    public void uploadDocument(Long id, MultipartFile file, DocumentType documentType) throws IOException {
+        User user = userRepository.findById(id).get();
+        byte[] content = file.getBytes();
+        String fileExtension = file.getContentType();
+        switch (documentType) {
+            case PASSPORT:
+                user.setPassport(content);
+                user.setPassportExtension(fileExtension);
+                break;
+            case IPQ:
+                user.setIpq(content);
+                user.setIpqExtension(fileExtension);
+                break;
+
+            case ADDRESS:
+                user.setAdderss(content);
+                user.setAddressExtension(fileExtension);
+                break;
+            default:
+                user.setSignature(content);
+                user.setSignatureExtension(fileExtension);
+        }
+
+        //not required
+        userRepository.save(user);
     }
 }
