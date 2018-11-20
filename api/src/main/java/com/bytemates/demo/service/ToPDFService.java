@@ -2,14 +2,16 @@ package com.bytemates.demo.service;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
+
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 
+
 @Service
 public class ToPDFService {
 
-    public void generatePDFFromImage(String filename, String extension){
+    public static void generatePDFFromImage(String filename, String extension){
         Document document = new Document();
         String input = filename + "." + extension;
         String output = filename + ".pdf";
@@ -19,7 +21,9 @@ public class ToPDFService {
             PdfWriter writer = PdfWriter.getInstance(document, fos);
             writer.open();
             document.open();
-            document.add(Image.getInstance(input));
+            Image img = Image.getInstance(input);
+            img.scalePercent(25, 25);
+            document.add(img);
             document.close();
             writer.close();
         }
@@ -28,11 +32,13 @@ public class ToPDFService {
         }
     }
 
+
     public void generatePDFFromText(String filename, String extension) throws IOException, DocumentException {
         Document pdfDoc = new Document();
         String input = filename + "." + extension;
         String output = filename + ".pdf";
-        PdfWriter.getInstance(pdfDoc, new FileOutputStream(output))
+        File file = new File(output);
+        PdfWriter.getInstance(pdfDoc, new FileOutputStream(file))
                 .setPdfVersion(PdfWriter.PDF_VERSION_1_7);
         pdfDoc.open();
 
@@ -51,5 +57,4 @@ public class ToPDFService {
         pdfDoc.close();
         br.close();
     }
-
 }

@@ -3,6 +3,7 @@ package com.bytemates.demo.controller;
 import com.bytemates.demo.model.DocumentType;
 import com.bytemates.demo.model.User;
 import com.bytemates.demo.repository.UserRepository;
+import com.bytemates.demo.service.ToPDFService;
 import com.bytemates.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -25,6 +26,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ToPDFService toPDFService;
 
     @GetMapping("/ping")
     public void ping() {
@@ -80,6 +83,8 @@ public class UserController {
     @PostMapping("/upload-document/{id}/{documentType}")
     public ResponseEntity uploadDocument(@PathVariable Long id, @PathVariable DocumentType documentType,
                                          @RequestParam("file") MultipartFile file) throws IOException {
+
+        String[] fileExt = file.getName().split(".");
 
         userService.uploadDocument(id, file, documentType);
         return ResponseEntity.ok().body("document uploaded");
