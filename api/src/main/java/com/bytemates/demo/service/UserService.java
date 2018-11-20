@@ -101,6 +101,33 @@ public class UserService {
         return dummyuser;
     }
 
+    public void signDocument(Long userId, DocumentType documentType, byte[] signature) throws Exception {
+        User user = userRepository.getOne(userId);
+        byte[] content, output;
+
+        switch (documentType) {
+            case PASSPORT:
+                content = user.getPassportDocument();
+                output = AddSignToPDF.addSign(signature, content);
+                user.setPassportDocument(output);
+                break;
+            case IPQ:
+                content = user.getIpqDocument();
+                output = AddSignToPDF.addSign(signature, content);
+                user.setIpqDocument(output);
+                break;
+            case ADDRESS:
+                content = user.getAddressDocument();
+                output = AddSignToPDF.addSign(signature, content);
+                user.setAddressDocument(output);
+                break;
+            default:
+                break;
+        }
+
+
+    }
+
     public static void main(String args[]) throws Exception {
         File file = new ClassPathResource("static/abc.txt").getFile();
         String encoded = FileUtils.readFileToString(file);

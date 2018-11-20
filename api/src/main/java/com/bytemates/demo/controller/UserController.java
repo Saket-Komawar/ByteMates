@@ -89,9 +89,11 @@ public class UserController {
     }
 
     @PostMapping("sign-document/{id}/{documentType}")
-    public void signDocument(@RequestParam String encodedString) {
-        byte[] decoded = Base64.getDecoder().decode(encodedString.split(",")[1]);
+    public void signDocument(@RequestParam String encodedString, @PathVariable Long id, @PathVariable DocumentType documentType) throws Exception {
 
+        String encoded = encodedString.split(",")[1];
+        byte[] decoded = Base64.getDecoder().decode(encoded);
+        userService.signDocument(id, documentType, decoded);
 
     }
 }
