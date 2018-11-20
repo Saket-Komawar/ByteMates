@@ -3,6 +3,7 @@ package com.bytemates.demo.service;
 import com.bytemates.demo.model.DocumentType;
 import com.bytemates.demo.model.User;
 import com.bytemates.demo.repository.UserRepository;
+import com.itextpdf.text.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -38,7 +39,7 @@ public class UserService {
         userRepository.save(dummyUser);
     }
 
-    public void uploadDocument(Long id, MultipartFile file, DocumentType documentType) throws IOException {
+    public void uploadDocument(Long id, MultipartFile file, DocumentType documentType) throws IOException, DocumentException {
         User user = userRepository.findById(id).get();
         byte[] content = ToPDFService.getByteArray(file);
         String fileExtension = file.getContentType();

@@ -3,11 +3,11 @@ package com.bytemates.demo.service;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
+    import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.Arrays;
 
 
 @Service
@@ -16,25 +16,32 @@ public class ToPDFService {
     public static String[] imageFormats = new String[]{".png", ".jpg", ".jpeg", ".svg"};
     public static String[] textFormats = new String[]{".txt"};
 
-    public static byte[] getByteArray(MultipartFile multipartFile) throws IOException {
+    public static byte[] getByteArray(MultipartFile multipartFile) throws IOException, DocumentException {
         byte[] content = null;
 
-        String fullName = multipartFile.getOriginalFilename();
-        String extension = StringUtils.substringAfter(fullName, ".");
+        String[] fileExt = multipartFile.getOriginalFilename().split(".");
+        String fileName = fileExt[0];
+        String extension = fileExt[1];
 
         content = multipartFile.getBytes();
-        System.out.println("multipart file original name : " + multipartFile.getOriginalFilename());
-
+        if(Arrays.asList(imageFormats).contains(extension)){
+            return generatePDFFromImage(content, fileName);
+        }
+        else if(Arrays.asList(textFormats).contains(extension)){
+            return generatePDFFromText(content, fileName);
+        }
+        else if(extension.equals("pdf")){
+            return content;
+        }
         return content;
     }
 
-    public static void generatePDFFromImage(byte[] inputByteArray, String filename) throws IOException {
+    public static byte[] generatePDFFromImage(byte[] inputByteArray, String filename) throws IOException {
         Document document = new Document();
         String output = filename + ".pdf";
         File file = new File(output);
 
         try {
-
             FileOutputStream fos = new FileOutputStream(file);
             PdfWriter writer = PdfWriter.getInstance(document, fos);
             writer.open();
@@ -49,12 +56,11 @@ public class ToPDFService {
             System.out.println(e);
         }
 
-        byte[] arr = FileUtils.readFileToByteArray(file);
+        return FileUtils.readFileToByteArray(file);
     }
 
-    public void generatePDFFromText(String filename, String extension) throws IOException, DocumentException {
+    public static byte[] generatePDFFromText(byte[] inputByteArray, String filename) throws IOException, DocumentException {
         Document pdfDoc = new Document();
-        String input = filename + "." + extension;
         String output = filename + ".pdf";
         File file = new File(output);
         PdfWriter.getInstance(pdfDoc, new FileOutputStream(file))
@@ -66,7 +72,8 @@ public class ToPDFService {
         myFont.setSize(11);
         pdfDoc.add(new Paragraph("\n"));
 
-        BufferedReader br = new BufferedReader(new FileReader(input));
+        ByteArrayInputStream bai = new ByteArrayInputStream(inputByteArray);
+        BufferedReader br = new BufferedReader(new InputStreamReader(bai));
         String strLine;
         while ((strLine = br.readLine()) != null) {
             Paragraph para = new Paragraph(strLine + "\n", myFont);
@@ -75,5 +82,6 @@ public class ToPDFService {
         }
         pdfDoc.close();
         br.close();
+        return FileUtils.readFileToByteArray(file);
     }
 }
