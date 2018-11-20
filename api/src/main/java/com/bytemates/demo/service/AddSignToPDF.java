@@ -20,7 +20,7 @@ public class AddSignToPDF {
         PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(output));//des
 
         Image image = Image.getInstance(signature);//sign
-        image.scalePercent(10, 10);
+        image.scalePercent(30, 30);
         PdfImage stream = new PdfImage(image, "", null);
         stream.put(new PdfName("ITXT_SpecialId"), new PdfName("123456789"));
         PdfIndirectObject ref = stamper.getWriter().addToBody(stream);
